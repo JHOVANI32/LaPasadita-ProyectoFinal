@@ -1,0 +1,388 @@
+@{
+    ViewData["Title"] = "Catálogo de Productos - La Pasadita";
+}
+
+<!-- Vista principal del catálogo con Tailwind CSS y AJAX -->
+<div class="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+    
+    <!-- Header de la tienda -->
+    <header class="bg-gradient-to-r from-green-700 to-green-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-md">
+                        <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold tracking-tight">La Pasadita</h1>
+                        <p class="text-green-100 text-sm">Tu tienda de abarrotes de confianza</p>
+                    </div>
+                </div>
+                
+                <!-- Barra de búsqueda -->
+                <div class="w-full md:w-96">
+                    <div class="relative">
+                        <input type="text" 
+                               id="searchInput" 
+                               placeholder="Buscar productos..." 
+                               class="w-full px-4 py-3 pl-12 rounded-xl text-gray-800 bg-white shadow-md focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all">
+                        <svg class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- Filtros de categoría -->
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Categorías</h2>
+            <div id="categoriesContainer" class="flex flex-wrap gap-3">
+                <button onclick="cargarProductos()" 
+                        class="category-btn active px-5 py-2.5 rounded-full bg-green-600 text-white font-medium shadow-md hover:bg-green-700 transition-all" 
+                        data-category="all">
+                    Todos
+                </button>
+                <!-- Las categorías se cargan dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Indicador de carga -->
+        <div id="loadingIndicator" class="hidden">
+            <div class="flex flex-col items-center justify-center py-16">
+                <div class="w-16 h-16 border-4 border-green-200 border-t-green-600 rounded-full animate-spin"></div>
+                <p class="mt-4 text-gray-600 font-medium">Cargando productos...</p>
+            </div>
+        </div>
+
+        <!-- Mensaje de error -->
+        <div id="errorMessage" class="hidden bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl mb-6">
+            <div class="flex items-center gap-3">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+                <span id="errorText">Error al cargar los productos</span>
+            </div>
+        </div>
+
+        <!-- Grid de productos -->
+        <section>
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Nuestros Productos</h2>
+                <span id="productCount" class="text-gray-500 bg-gray-100 px-4 py-1.5 rounded-full text-sm font-medium">0 productos</span>
+            </div>
+            
+            <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Los productos se cargan dinámicamente con AJAX -->
+            </div>
+
+            <!-- Mensaje sin productos -->
+            <div id="noProducts" class="hidden text-center py-16">
+                <svg class="w-24 h-24 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                </svg>
+                <h3 class="text-xl font-semibold text-gray-600 mb-2">No se encontraron productos</h3>
+                <p class="text-gray-400">Intenta con otra búsqueda o categoría</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400">&copy; 2024 La Pasadita - Tienda de Abarrotes</p>
+            <p class="text-sm text-gray-500 mt-2">Proyecto ASP.NET Core MVC con Supabase</p>
+        </div>
+    </footer>
+</div>
+
+<!-- Modal para ver detalle del producto -->
+<div id="productModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div class="relative">
+            <button onclick="cerrarModal()" class="absolute top-4 right-4 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-colors z-10">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <img id="modalImage" src="" alt="" class="w-full h-64 object-cover rounded-t-2xl">
+        </div>
+        <div class="p-6">
+            <span id="modalCategory" class="text-sm text-green-600 font-medium bg-green-50 px-3 py-1 rounded-full"></span>
+            <h3 id="modalTitle" class="text-2xl font-bold text-gray-800 mt-3 mb-2"></h3>
+            <p id="modalDescription" class="text-gray-600 mb-4"></p>
+            <div class="flex items-center gap-3 mb-4">
+                <span id="modalPrice" class="text-3xl font-bold text-green-600"></span>
+                <span id="modalOriginalPrice" class="text-lg text-gray-400 line-through"></span>
+            </div>
+            <div id="modalDetails" class="text-sm text-gray-500 space-y-1 mb-6"></div>
+            <button onclick="agregarAlCarrito()" class="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                Agregar al Carrito
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // ============================================
+    // AJAX FUNCTIONS - Comunicación con el Backend
+    // ============================================
+
+    let productosCache = [];
+    let categoriasCache = [];
+    let debounceTimer;
+
+    // Inicializar al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        cargarCategorias();
+        cargarProductos();
+        
+        // Configurar búsqueda con debounce
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                buscarProductos(e.target.value);
+            }, 300);
+        });
+    });
+
+    // Mostrar/ocultar indicador de carga
+    function mostrarCarga(show) {
+        document.getElementById('loadingIndicator').classList.toggle('hidden', !show);
+        document.getElementById('productsGrid').classList.toggle('hidden', show);
+    }
+
+    // Mostrar mensaje de error
+    function mostrarError(mensaje) {
+        const errorDiv = document.getElementById('errorMessage');
+        document.getElementById('errorText').textContent = mensaje;
+        errorDiv.classList.remove('hidden');
+        setTimeout(() => errorDiv.classList.add('hidden'), 5000);
+    }
+
+    // ============================================
+    // CRUD: READ - Cargar todos los productos
+    // ============================================
+    async function cargarProductos() {
+        mostrarCarga(true);
+        try {
+            const response = await fetch('/api/productos');
+            const result = await response.json();
+            
+            if (result.success) {
+                productosCache = result.data;
+                renderizarProductos(result.data);
+            } else {
+                mostrarError(result.message || 'Error al cargar productos');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarError('Error de conexión con el servidor');
+        } finally {
+            mostrarCarga(false);
+        }
+    }
+
+    // Cargar categorías
+    async function cargarCategorias() {
+        try {
+            const response = await fetch('/api/categorias');
+            const result = await response.json();
+            
+            if (result.success) {
+                categoriasCache = result.data;
+                renderizarCategorias(result.data);
+            }
+        } catch (error) {
+            console.error('Error al cargar categorías:', error);
+        }
+    }
+
+    // Filtrar por categoría
+    async function filtrarPorCategoria(categoriaId, elemento) {
+        // Actualizar estado activo de botones
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.classList.remove('active', 'bg-green-600', 'text-white');
+            btn.classList.add('bg-white', 'text-gray-700');
+        });
+        elemento.classList.add('active', 'bg-green-600', 'text-white');
+        elemento.classList.remove('bg-white', 'text-gray-700');
+
+        mostrarCarga(true);
+        try {
+            const response = await fetch(`/api/productos/categoria/${categoriaId}`);
+            const result = await response.json();
+            
+            if (result.success) {
+                renderizarProductos(result.data);
+            }
+        } catch (error) {
+            mostrarError('Error al filtrar productos');
+        } finally {
+            mostrarCarga(false);
+        }
+    }
+
+    // Buscar productos
+    async function buscarProductos(termino) {
+        if (!termino.trim()) {
+            cargarProductos();
+            return;
+        }
+
+        mostrarCarga(true);
+        try {
+            const response = await fetch(`/api/productos/buscar?q=${encodeURIComponent(termino)}`);
+            const result = await response.json();
+            
+            if (result.success) {
+                renderizarProductos(result.data);
+            }
+        } catch (error) {
+            mostrarError('Error en la búsqueda');
+        } finally {
+            mostrarCarga(false);
+        }
+    }
+
+    // ============================================
+    // RENDERIZADO DE COMPONENTES
+    // ============================================
+
+    function renderizarCategorias(categorias) {
+        const container = document.getElementById('categoriesContainer');
+        const btnTodos = container.querySelector('[data-category="all"]');
+        
+        categorias.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'category-btn px-5 py-2.5 rounded-full bg-white text-gray-700 font-medium shadow-md hover:bg-green-600 hover:text-white transition-all';
+            btn.textContent = cat.nombre;
+            btn.onclick = () => filtrarPorCategoria(cat.id, btn);
+            container.appendChild(btn);
+        });
+    }
+
+    function renderizarProductos(productos) {
+        const grid = document.getElementById('productsGrid');
+        const noProducts = document.getElementById('noProducts');
+        const countSpan = document.getElementById('productCount');
+
+        countSpan.textContent = `${productos.length} producto${productos.length !== 1 ? 's' : ''}`;
+
+        if (productos.length === 0) {
+            grid.innerHTML = '';
+            noProducts.classList.remove('hidden');
+            return;
+        }
+
+        noProducts.classList.add('hidden');
+        
+        grid.innerHTML = productos.map(producto => `
+            <article class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group"
+                     onclick="verDetalle(${producto.id})">
+                <div class="relative overflow-hidden">
+                    <img src="${producto.imagen_url || '/images/placeholder.jpg'}" 
+                         alt="${producto.nombre}"
+                         class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+                         onerror="this.src='/images/placeholder.jpg'">
+                    ${producto.precio_oferta ? `
+                        <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                            OFERTA
+                        </span>
+                    ` : ''}
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </div>
+                <div class="p-5">
+                    <span class="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">
+                        ${producto.categorias?.nombre || 'Sin categoría'}
+                    </span>
+                    <h3 class="font-bold text-lg text-gray-800 mt-2 mb-1 line-clamp-1">${producto.nombre}</h3>
+                    <p class="text-gray-500 text-sm mb-3 line-clamp-2">${producto.descripcion || 'Sin descripción'}</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl font-bold text-green-600">$${formatearPrecio(producto.precio_oferta || producto.precio)}</span>
+                            ${producto.precio_oferta ? `
+                                <span class="text-sm text-gray-400 line-through">$${formatearPrecio(producto.precio)}</span>
+                            ` : ''}
+                        </div>
+                        <button class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center hover:bg-green-600 hover:text-white transition-colors"
+                                onclick="event.stopPropagation(); agregarAlCarritoRapido(${producto.id})">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+        `).join('');
+    }
+
+    // ============================================
+    // MODAL Y FUNCIONES AUXILIARES
+    // ============================================
+
+    function verDetalle(productoId) {
+        const producto = productosCache.find(p => p.id === productoId);
+        if (!producto) return;
+
+        document.getElementById('modalImage').src = producto.imagen_url || '/images/placeholder.jpg';
+        document.getElementById('modalCategory').textContent = producto.categorias?.nombre || 'Sin categoría';
+        document.getElementById('modalTitle').textContent = producto.nombre;
+        document.getElementById('modalDescription').textContent = producto.descripcion || 'Sin descripción disponible';
+        document.getElementById('modalPrice').textContent = `$${formatearPrecio(producto.precio_oferta || producto.precio)}`;
+        
+        const originalPrice = document.getElementById('modalOriginalPrice');
+        if (producto.precio_oferta) {
+            originalPrice.textContent = `$${formatearPrecio(producto.precio)}`;
+            originalPrice.classList.remove('hidden');
+        } else {
+            originalPrice.classList.add('hidden');
+        }
+
+        document.getElementById('modalDetails').innerHTML = `
+            ${producto.marca ? `<p><strong>Marca:</strong> ${producto.marca}</p>` : ''}
+            ${producto.unidad_medida ? `<p><strong>Unidad:</strong> ${producto.unidad_medida}</p>` : ''}
+            ${producto.codigo_barras ? `<p><strong>Código:</strong> ${producto.codigo_barras}</p>` : ''}
+        `;
+
+        document.getElementById('productModal').classList.remove('hidden');
+        document.getElementById('productModal').classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModal() {
+        document.getElementById('productModal').classList.add('hidden');
+        document.getElementById('productModal').classList.remove('flex');
+        document.body.style.overflow = 'auto';
+    }
+
+    function formatearPrecio(precio) {
+        return parseFloat(precio).toFixed(2);
+    }
+
+    function agregarAlCarrito() {
+        // Aquí iría la lógica del carrito
+        alert('Producto agregado al carrito');
+        cerrarModal();
+    }
+
+    function agregarAlCarritoRapido(productoId) {
+        alert(`Producto ${productoId} agregado al carrito`);
+    }
+
+    // Cerrar modal al hacer clic fuera
+    document.getElementById('productModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            cerrarModal();
+        }
+    });
+</script>
+}
