@@ -1,0 +1,8 @@
+C:\Users\jhova\Downloads\b_jlaSXAwcD0E\LaPasadita\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\jhova\Downloads\b_jlaSXAwcD0E\LaPasadita\obj\Debug\net8.0\LaPasadita.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jhova\Downloads\b_jlaSXAwcD0E\LaPasadita\obj\Debug\net8.0\LaPasadita.AssemblyInfoInputs.cache
+C:\Users\jhova\Downloads\b_jlaSXAwcD0E\LaPasadita\obj\Debug\net8.0\LaPasadita.AssemblyInfo.cs
+C:\Users\jhova\Downloads\b_jlaSXAwcD0E\LaPasadita\obj\Debug\net8.0\LaPasadita.csproj.CoreCompileInputs.cache
+C:\Users\jhova\Downloads\b_jlaSXAwcD0E\LaPasadita\obj\Debug\net8.0\LaPasadita.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\jhova\Downloads\b_jlaSXAwcD0E\LaPasadita\obj\Debug\net8.0\LaPasadita.RazorAssemblyInfo.cache
+C:\Users\jhova\Downloads\b_jlaSXAwcD0E\LaPasadita\obj\Debug\net8.0\LaPasadita.RazorAssemblyInfo.cs
