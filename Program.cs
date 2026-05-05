@@ -15,11 +15,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.PropertyNamingPolicy = null;
-});
-
 var app = builder.Build();
 
 // PIPELINE DE MIDDLEWARE
@@ -35,14 +30,9 @@ app.UseRouting();
 app.UseCors("AllowAll");
 app.UseAuthorization();
 
-// RUTAS
+// RUTAS - Aquí es donde le decimos que cargue Productos al inicio
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Productos}/{action=Index}/{id?}");
-
-app.MapControllerRoute(
-    name: "home",
-    pattern: "Home/{action=Index}/{id?}",
-    defaults: new { controller = "Home" });
 
 app.Run();
